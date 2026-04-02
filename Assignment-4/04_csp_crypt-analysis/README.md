@@ -8,7 +8,7 @@ This project implements a solver for a cryptarithmetic puzzle using a Constraint
 
 Solve the following puzzle:
 
-SEND + MORE = MONEY
+TWO + TWO = FOUR
 
 Each letter represents a unique digit from 0 to 9.
 
@@ -18,11 +18,11 @@ Each letter represents a unique digit from 0 to 9.
 * Digits range from 0 to 9
 * Leading letters cannot be zero:
 
-  * S ≠ 0
-  * M ≠ 0
+  * T ≠ 0
+  * F ≠ 0
 * The arithmetic equation must hold true:
 
-  SEND + MORE = MONEY
+  TWO + TWO = FOUR
 
 ## Approach
 
@@ -53,6 +53,7 @@ The solution uses a backtracking-based CSP approach:
 ## Output
 
 * Displays the digit assigned to each letter if a solution is found
+* Prints verification of the equation
 * Prints a message if no solution exists
 
 ## File Structure

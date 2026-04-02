@@ -1,30 +1,30 @@
-letters = ['S', 'E', 'N', 'D', 'M', 'O', 'R', 'Y']
+letters = ['T', 'W', 'O', 'F', 'U', 'R']
 digits = list(range(10))
 
 
 def is_consistent(assignment):
     if len(set(assignment.values())) != len(assignment):
         return False
-    if 'S' in assignment and assignment['S'] == 0:
+
+    if 'T' in assignment and assignment['T'] == 0:
         return False
-    if 'M' in assignment and assignment['M'] == 0:
+    if 'F' in assignment and assignment['F'] == 0:
         return False
 
     return True
 
 
-def is_solution(assignment):
-    if len(assignment) != len(letters):
+def is_solution(a):
+    if len(a) != len(letters):
         return False
 
-    S, E, N, D = assignment['S'], assignment['E'], assignment['N'], assignment['D']
-    M, O, R, Y = assignment['M'], assignment['O'], assignment['R'], assignment['Y']
+    T, W, O = a['T'], a['W'], a['O']
+    F, U, R = a['F'], a['U'], a['R']
 
-    SEND = 1000*S + 100*E + 10*N + D
-    MORE = 1000*M + 100*O + 10*R + E
-    MONEY = 10000*M + 1000*O + 100*N + 10*E + Y
+    TWO = 100*T + 10*W + O
+    FOUR = 1000*F + 100*O + 10*U + R
 
-    return SEND + MORE == MONEY
+    return TWO + TWO == FOUR
 
 
 def select_unassigned_variable(assignment):
@@ -60,5 +60,14 @@ if solution:
     print("Solution:")
     for k in sorted(solution):
         print(k, "=", solution[k])
+
+    T, W, O = solution['T'], solution['W'], solution['O']
+    F, U, R = solution['F'], solution['U'], solution['R']
+
+    TWO = 100*T + 10*W + O
+    FOUR = 1000*F + 100*O + 10*U + R
+
+    print("\nVerification:")
+    print(f"{TWO} + {TWO} = {FOUR}")
 else:
     print("No solution found")
