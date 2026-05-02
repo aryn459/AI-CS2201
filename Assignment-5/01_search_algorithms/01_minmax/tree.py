@@ -1,3 +1,5 @@
+from collections import deque
+
 class Treenode:
     def __init__(self, data = None):
         self.data = data
@@ -22,5 +24,22 @@ def assign_tree(node):
     for child in node.children:
         assign_tree(child)
 
-def print_tree(node, level= 0):
-    pass
+def print_tree(node):
+    if not node:
+        return
+    
+    queue = deque([node])
+    # level = 0
+    while queue:
+        l_size = len(queue)
+        # print("Max of " if level % 2 ==0 else "Min of ", end="")
+        for _ in range(l_size):
+            current = queue.popleft()
+            print(f"{current.data} ", end="")
+
+            for child in current.children:
+                queue.append(child)
+        # level += 1
+        print()
+
+

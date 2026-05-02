@@ -1,0 +1,9 @@
+Tree before minmax:
+None
+None None
+3 5 2 9
+
+Tree after minmax:
+5
+5 9
+3 5 2 9
