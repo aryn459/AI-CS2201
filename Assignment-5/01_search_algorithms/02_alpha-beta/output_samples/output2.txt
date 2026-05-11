@@ -1,0 +1,14 @@
+Tree before alpha-beta:
+None 
+None None None 
+None None None None None None None None None 
+3 5 2 9 8 3 2 1 4 7 7 6 8 9 0 18 14 27 13 25 67 2 8 9 4 5 6 
+Pruned subtree at node 9
+Pruned subtree at node 8
+Pruned subtree at node 18
+Pruned subtree at node 6
+Tree after alpha-beta:
+7 
+4 7 6 
+5 9 4 7 8 18 67 9 6 
+3 5 2 9 8 3 2 1 4 7 7 6 8 9 0 18 14 27 13 25 67 2 8 9 4 5 6 
