@@ -1,0 +1,4 @@
+Depth: 3
+Branching Factor: 2
+Leaf Values:
+1 2 3 4 5 6 7 8
