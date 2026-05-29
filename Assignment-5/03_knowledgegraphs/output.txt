@@ -1,0 +1,20 @@
+Knowledge Graph Created Successfully!
+
+Total Nodes: 11
+
+===== RECOMMENDED TOURIST PLACES =====
+
+Place      : Louvre Museum
+Rating     : 4.8
+Entry Fee  : $20
+----------------------------------------
+Place      : Versailles Palace
+Rating     : 4.8
+Entry Fee  : $25
+----------------------------------------
+Place      : Notre Dame Cathedral
+Rating     : 4.7
+Entry Fee  : $15
+----------------------------------------
+
+Process finished with exit code 0

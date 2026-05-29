@@ -1,0 +1,25 @@
+=== AI Travel Planner ===
+
+User Query
+Paris
+Budget = 1500
+Vegetarian
+
+Retrieved Case
+101
+
+Similarity Score
+0.93
+
+Adapted Travel Plan
+
+Day 1: Eiffel Tower
+Day 2: Louvre Museum
+
+Lunch Recommendation
+Vegetarian Lasagna
+
+Cost Assessment
+Estimated Cost = 1445
+
+Within Budget

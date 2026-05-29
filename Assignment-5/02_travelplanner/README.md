@@ -1,239 +1,120 @@
-# AI-Based Travel Planner using Knowledge Graphs, Ontologies and Case-Based Reasoning
+# AI-Based Travel Planner using Knowledge Graphs and Case-Based Reasoning
 
-## 1. Objective
+## Overview
 
-The objective of this project is to design an AI-based Travel Planner that reuses existing knowledge bases in the tourism domain rather than manually encoding travel knowledge.
+This project implements an AI-Based Travel Planner that combines Knowledge Graphs and Case-Based Reasoning (CBR) to generate personalized travel recommendations.
 
-The planner combines:
-
-- Knowledge Graphs
-- Ontologies
-- Case-Based Reasoning (CBR)
-- Constraint Optimization
-- Cost Assessment
-
-to generate personalized travel itineraries.
+The system stores tourism knowledge using a Neo4j Knowledge Graph and reuses previous travel experiences to create customized travel plans. It also performs cost assessment to ensure that recommendations satisfy user budget constraints.
 
 ---
 
-# 2. Motivation
+# Objectives
 
-Travel planning requires integrating multiple domains:
+The objectives of this project are:
 
-- Tourist attractions
-- Hotels
-- Restaurants
-- Transportation
-- Weather
-- Budget constraints
-- User preferences
-
-These domains already have curated knowledge bases such as:
-
-| Domain | Knowledge Source |
-|----------|------------------|
-| Attractions | Wikidata |
-| Geographic Data | OpenStreetMap |
-| Food Knowledge | FoodOn |
-| Wine Pairing | Stanford Wine Ontology |
-| User Preferences | Local Database |
-
-Instead of rebuilding this information, the system reuses these knowledge sources.
+* Represent tourism knowledge using a Knowledge Graph.
+* Reuse existing travel experiences through Case-Based Reasoning.
+* Generate personalized travel recommendations.
+* Adapt travel plans according to user preferences.
+* Estimate travel costs and validate budget constraints.
 
 ---
 
-# 3. System Architecture
+# System Architecture
 
-```text
+```text id="lmn5kv"
 User Query
      ↓
-Intent & Constraint Extraction
+Knowledge Graph
      ↓
-Knowledge Graph Retrieval
+Case Retrieval
      ↓
-Case-Based Reasoning
-     ↓
-Itinerary Optimization
+Case Adaptation
      ↓
 Cost Assessment
      ↓
 Travel Plan
 ```
 
-Example Query:
-
-```text
-5-Day Paris Trip
-Budget: €1500
-Diet: Vegetarian
-Interest: History
-Pace: Moderate
-```
-
 ---
 
-# 4. Knowledge Graph Design
+# Knowledge Graph Design
 
 ## Entity Types
 
-```text
+```text id="z5x35e"
 User
 City
 TouristPlace
-Hotel
 Restaurant
-FoodType
 Activity
-Transport
 ```
 
 ## Relationship Types
 
-```text
-LOCATED_IN
-HAS_ACTIVITY
-SERVES
+```text id="djlwmv"
 LIKES
-VISITS
-CONNECTED_BY
-NEAR
+HAS_ACTIVITY
+LOCATED_IN
 ```
 
-### Neo4j Representation
+### Example Graph Structure
 
-```cypher
-CREATE (:TouristPlace {
-    wikidata_id:"Q243",
-    name:"Eiffel Tower",
-    category:"Monument",
-    entry_fee:25
-})
-```
+```text id="dy7vfr"
+(Peter)
+    |
+  LIKES
+    |
+(History)
 
-```cypher
-MATCH (p:TouristPlace),
-      (c:City)
+(History)
+    |
+HAS_ACTIVITY
+    |
+(Eiffel Tower)
 
-WHERE p.name='Eiffel Tower'
-AND c.name='Paris'
-
-CREATE (p)-[:LOCATED_IN]->(c)
-```
-
----
-
-# 5. Knowledge Reuse
-
-## Wikidata Retrieval
-
-Tourist attractions are retrieved using SPARQL.
-
-```sparql
-SELECT ?place ?placeLabel
-WHERE {
-  ?place wdt:P31 wd:Q570116 .
-
-  SERVICE wikibase:label {
-      bd:serviceParam wikibase:language "en"
-  }
-}
-LIMIT 20
-```
-
-Explanation:
-
-```text
-P31 → Instance Of
-
-Q570116 → Tourist Attraction
+(Eiffel Tower)
+    |
+LOCATED_IN
+    |
+(Paris)
 ```
 
 ---
 
-## OpenStreetMap Retrieval
+# Case-Based Reasoning
 
-Nearby attractions:
+The system follows the classical CBR cycle:
 
-```sql
-[out:json];
-
-(
- node["tourism"="attraction"]
- (around:5000,48.8584,2.2945);
-);
-
-out body;
-```
-
-This retrieves attractions within 5 km of the Eiffel Tower.
-
----
-
-## Ontology Reuse
-
-The Stanford Wine Ontology is reused rather than manually encoding wine-food pairings.
-
-Example:
-
-```ttl
-:CabernetSauvignon rdf:type wine:RedWine .
-
-:RedMeatDish
-food:recommendedWine
-:CabernetSauvignon .
-```
-
-Inference:
-
-```text
-IF user selects Red Meat Dish
-
-THEN recommend Cabernet Sauvignon
-```
-
----
-
-# 6. Case-Based Reasoning
-
-The planner follows the classical CBR cycle.
-
-```text
+```text id="5n9eyv"
 Retrieve
 Reuse
 Revise
 Retain
 ```
 
-## Case Representation
+Example stored case:
 
-```json
+```json id="m4a7c3"
 {
-  "case_id":101,
-
-  "problem":{
-    "destination":"Paris",
-    "days":5,
-    "budget":1500,
-    "diet":"Vegetarian",
-    "interest":["History"]
-  },
-
-  "solution":{
-    "day1":["Eiffel Tower"],
-    "day2":["Louvre Museum"]
-  },
-
-  "rating":4.8
+  "case_id": 101,
+  "destination": "Paris",
+  "days": 5,
+  "budget": 1600,
+  "diet": "Non-Vegetarian",
+  "interest": "History"
 }
 ```
 
+The most similar case is retrieved and adapted to the current user's requirements.
+
 ---
 
-# 7. Retrieval Strategy
+# Similarity Function
 
-Similarity function:
+The similarity score is calculated using:
 
-```text
+```text id="kw4b90"
 Similarity
 
 =
@@ -249,76 +130,60 @@ Similarity
 0.25 × InterestSimilarity
 ```
 
-Example:
-
-```text
-Query:
-Paris
-Budget=1500
-
-Case:
-Paris
-Budget=1600
-
-Similarity=0.93
-```
-
-The case is retrieved and adapted.
+The case with the highest similarity score is selected for adaptation.
 
 ---
 
-# 8. Adaptation
+# Adaptation Strategy
 
-Original Case:
+Example:
 
-```text
+Original recommendation:
+
+```text id="is71f9"
 Lunch:
 Beef Steak
 ```
 
-User Constraint:
+User preference:
 
-```text
+```text id="fxdd6u"
 Vegetarian
 ```
 
-Adapted Solution:
+Adapted recommendation:
 
-```text
+```text id="u4c0k9"
 Lunch:
 Vegetarian Lasagna
 ```
 
-FoodOn ontology provides equivalent food recommendations.
+This demonstrates how existing solutions can be modified to satisfy new constraints.
 
 ---
 
-# 9. Cost Assessment
+# Cost Assessment
 
-The total trip cost is calculated as:
+Trip cost is calculated using:
 
-```text
+```text id="ubig0c"
 TotalCost
 
 =
 FlightCost
-
 +
 HotelCost
-
 +
 FoodCost
-
-+
-EntryFees
-
 +
 TransportCost
++
+EntryFees
 ```
 
 Example:
 
-```text
+```text id="v0cwqb"
 Flights = €400
 
 Hotels = €700
@@ -327,63 +192,118 @@ Food = €200
 
 Transport = €100
 
-Entry Fees = €80
+Entry Fees = €45
 
-Total = €1480
+Total = €1445
 ```
 
 Constraint:
 
-```text
+```text id="2vl50x"
 TotalCost ≤ UserBudget
 ```
 
 ---
 
-# 10. Itinerary Optimization
+# Technologies Used
 
-Objective:
-
-```text
-Minimize
-
-TravelTime
-+
-BudgetDeviation
--
-PreferenceScore
-```
-
-Constraints:
-
-```text
-TotalCost ≤ Budget
-
-TravelTimePerDay ≤ 8 Hours
-
-AtLeastOneHotelPerCluster
-
-AtLeastTwoMealsPerDay
-```
-
-Implemented using Google OR-Tools.
+| Component                | Technology           |
+| ------------------------ | -------------------- |
+| Programming Language     | Python               |
+| Graph Database           | Neo4j                |
+| Query Language           | Cypher               |
+| Knowledge Representation | Knowledge Graph      |
+| Reasoning Technique      | Case-Based Reasoning |
+| Cost Assessment          | Python               |
 
 ---
 
-# 11. Technology Stack
+# Installation
 
-| Layer | Tool |
-|---------|--------|
-| Graph Database | Neo4j |
-| Ontology Engine | RDFLib |
-| Ontology Design | Protégé |
-| Knowledge Sources | Wikidata, OSM, FoodOn |
-| Backend | Python |
-| Optimization | OR-Tools |
-| Storage | SQLite |
+Install the required dependency:
+
+```bash id="rzk3th"
+pip install neo4j
+```
+
+Configure the Neo4j connection in `main.py`:
+
+```python id="btrwjr"
+URI = "bolt://localhost:7687"
+USERNAME = "neo4j"
+PASSWORD = "yourpassword"
+```
+
+Ensure that the Neo4j database is running before executing the program.
 
 ---
 
-# 12. Conclusion
+# Running the Project
 
-The proposed Travel Planner demonstrates how Knowledge Graphs, Ontologies, Case-Based Reasoning and Optimization can be combined to create an intelligent and explainable travel recommendation system.
+```bash id="5df0eb"
+python main.py
+```
+
+---
+
+# Sample Output
+
+```text id="n4vl3m"
+=== AI Travel Planner ===
+
+User Query
+Paris
+Budget = 1500
+Vegetarian
+
+Retrieved Case
+101
+
+Similarity Score
+0.93
+
+Adapted Travel Plan
+
+Day 1: Eiffel Tower
+Day 2: Louvre Museum
+
+Lunch Recommendation
+Vegetarian Lasagna
+
+Cost Assessment
+Estimated Cost = 1445
+
+Within Budget
+```
+
+---
+
+# Features Implemented
+
+* Knowledge Graph Creation using Neo4j
+* Tourism Entity Modeling
+* Relationship Representation
+* Case-Based Reasoning Retrieval
+* Similarity Calculation
+* Case Adaptation
+* Personalized Recommendations
+* Cost Assessment
+* Budget Validation
+
+---
+
+# Future Improvements
+
+* Integration with Wikidata
+* Integration with OpenStreetMap
+* FoodOn Ontology Support
+* Stanford Wine Ontology Support
+* Dynamic Flight and Hotel Pricing
+* Route Optimization using OR-Tools
+* Web Interface using Flask
+
+---
+
+# Conclusion
+
+This project demonstrates the use of Knowledge Graphs and Case-Based Reasoning in the travel domain. The system reuses existing travel knowledge, adapts recommendations according to user preferences, and evaluates travel costs to generate personalized travel plans.

@@ -1,222 +1,144 @@
-# Knowledge Graphs and Tools for Building Knowledge Graphs
+# Tourism Knowledge Graph using Neo4j
 
-## 1. Introduction
+## Overview
 
-A Knowledge Graph (KG) is a graph-based representation of entities and relationships that models real-world knowledge.
+This project demonstrates the implementation of a Tourism Knowledge Graph using Neo4j.
 
-Unlike relational databases, knowledge graphs emphasize semantic relationships and allow efficient traversal between connected entities.
+The graph represents tourism-related entities such as users, activities, cities, restaurants, and tourist attractions, along with the relationships between them.
 
----
+The project demonstrates:
 
-# 2. Knowledge Graph Structure
-
-A KG consists of:
-
-## Entities
-
-```text
-Paris
-Eiffel Tower
-Restaurant
-Hotel
-```
-
-## Relationships
-
-```text
-LOCATED_IN
-SERVES
-LIKES
-VISITS
-```
-
-## Properties
-
-```text
-name
-rating
-entry_fee
-price
-```
+* Knowledge Graph Modeling
+* Entity and Relationship Representation
+* Graph Traversal
+* Cypher Queries
+* Recommendation Generation
 
 ---
 
-# 3. Tourism Knowledge Graph Example
+## Knowledge Graph Structure
+
+### Entities
 
 ```text
-(User)
-   |
-LIKES
-   |
-(History)
-
-(History)
-   |
-HAS_ACTIVITY
-   |
-(Louvre Museum)
-
-(Louvre Museum)
-   |
-LOCATED_IN
-   |
-(Paris)
-```
-
----
-
-# 4. Neo4j Property Graph Model
-
-Node:
-
-```cypher
-CREATE (:TouristPlace {
-    name:"Louvre Museum",
-    rating:4.8
-})
-```
-
-Relationship:
-
-```cypher
-MATCH (u:User)-[:LIKES]->(a:Activity)
-
-MATCH (p:TouristPlace)-[:HAS_ACTIVITY]->(a)
-
-RETURN p.name
-```
-
-This query retrieves attractions matching user interests.
-
----
-
-# 5. Tools for Building Knowledge Graphs
-
-## Graph Databases
-
-### Neo4j
-
-Advantages:
-
-- Property Graph Model
-- Cypher Query Language
-- Visualization
-- Python Integration
-
-### Memgraph
-
-Advantages:
-
-- In-memory architecture
-- Streaming graph analytics
-
-### JanusGraph
-
-Advantages:
-
-- Distributed storage
-- Massive-scale graphs
-
-### GraphDB
-
-Advantages:
-
-- RDF Triple Store
-- Semantic Web support
-
----
-
-# 6. Knowledge Extraction Tools
-
-## LangChain
-
-Used to:
-
-- Parse documents
-- Extract entities
-- Build graph structures
-
-## LlamaIndex
-
-Used to:
-
-- Connect external data sources
-- Organize retrieved knowledge
-
-## GliNER
-
-Used for:
-
-- Named Entity Recognition
-- Zero-shot extraction
-
-Example:
-
-```text
-"Eiffel Tower is located in Paris"
-
-Entity 1:
-Eiffel Tower
-
-Entity 2:
-Paris
-
-Relationship:
-LOCATED_IN
-```
-
----
-
-# 7. Ontology Modeling Tools
-
-## Protégé
-
-Used for:
-
-- OWL ontology creation
-- Reasoning
-- Ontology visualization
-
-Example:
-
-```text
+User
+Activity
 TouristPlace
+City
+Restaurant
+```
 
-├── HistoricalPlace
-├── Museum
-├── Monument
+### Relationships
+
+```text
+LIKES
+HAS_ACTIVITY
+LOCATED_IN
 ```
 
 ---
 
-# 8. Visualization Tools
+## Example Graph
 
-## Gephi
+```text
+(Peter)
+  │
+LIKES
+  │
+ ├── History
+ │      │
+ │      ├── Louvre Museum
+ │      ├── Notre Dame Cathedral
+ │      └── Versailles Palace
+ │
+ └── Art
+        │
+        ├── Louvre Museum
+        └── Versailles Palace
 
-Graph analytics and visualization.
-
-## Linkurious
-
-Interactive Neo4j graph exploration.
+All Tourist Places
+        │
+   LOCATED_IN
+        │
+      Paris
+```
 
 ---
 
-# 9. Tool Selection Analysis
+## Technologies Used
 
-Based on assignment requirements:
-
-| Criteria | Neo4j |
-|-----------|--------|
-| Ease of Use | High |
-| Visualization | Excellent |
-| Python Support | Excellent |
-| Recommendation Systems | Excellent |
-| Learning Curve | Low |
-
-Therefore Neo4j was selected.
+| Component            | Technology     |
+| -------------------- | -------------- |
+| Programming Language | Python         |
+| Graph Database       | Neo4j          |
+| Query Language       | Cypher         |
+| Graph Model          | Property Graph |
 
 ---
 
-# 10. Conclusion
+## Installation
 
-Knowledge Graphs provide a flexible mechanism for representing interconnected information. Neo4j was chosen because it offers strong visualization, simple querying, and excellent support for recommendation systems.
+Install dependencies:
+
+```bash
+pip install neo4j
+```
+
+Update the Neo4j credentials inside `main.py`:
+
+```python
+URI = "neo4j://127.0.0.1:7687"
+USERNAME = "neo4j"
+PASSWORD = "12345678"
+```
+
+---
+
+## Running the Project
+
+```bash
+python main.py
+```
+
+
+
+## Sample Output
+
+```text
+Knowledge Graph Created Successfully!
+
+Total Nodes: 11
+
+===== RECOMMENDED TOURIST PLACES =====
+
+Place      : Louvre Museum
+Rating     : 4.8
+Entry Fee  : $20
+----------------------------------------
+
+Place      : Versailles Palace
+Rating     : 4.8
+Entry Fee  : $25
+----------------------------------------
+
+Place      : Notre Dame Cathedral
+Rating     : 4.7
+Entry Fee  : $15
+----------------------------------------
+```
+
+
+## Features Implemented
+
+* Knowledge Graph Creation
+* Node Creation
+* Relationship Creation
+* Property Graph Representation
+* Cypher Query Execution
+* Tourism Recommendation Query
+
+---
+
+## Conclusion
+
+This project demonstrates how Neo4j can be used to model tourism knowledge as a graph and retrieve recommendations through graph traversal and Cypher queries.
